@@ -13,27 +13,25 @@ class Indexview(TemplateView):
         args={'posts':posts, 'post':post,'id':id }
         return render(request, self.template_name, args)
 
+class Searchview(TemplateView):
+    """docstring forSearchview."""
+    def get(self, request, id=1):
+        query=request.GET.get("q")
+        post=EntertainmentModel.objects.all()
+        posts=get_object_or_404(EntertainmentModel,id=id)
 
-
-def search(request,id=5):
-    query=request.GET.get("q")
-    post=EntertainmentModel.objects.all()
-    posts=get_object_or_404(EntertainmentModel,id=id)
-
-    if query:
-        post=post.filter(
+        if query:
+            post=post.filter(
             Q(content__icontains=query)|
             Q(heading__icontains=query)|
             Q(author__icontains=query)
             ).distinct()
 
-        args={'posts':post,'id':id }
-        return render(request, 'blog/search.html', args)
-    else:
-        args={'posts':posts,'post':post,'id':id }
-        return render(request, 'blog/index.html',args)
-
-
+            args={'posts':post,'id':id }
+            return render(request, 'blog/search.html', args)
+        else:
+            args={'posts':posts,'post':post,'id':id }
+            return render(request, 'blog/index.html',args)
 
 def aboutus(request):
     return render(request, 'blog/aboutus.html')
